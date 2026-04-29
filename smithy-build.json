@@ -1,0 +1,8 @@
+{
+  "version": "1.0",
+  "maven": {
+    "dependencies": [
+      "com.disneystreaming.alloy:alloy-core:0.3.38"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+target/
+.bloop/
+.metals/
+.bsp/
+.idea/
+*.class
+*.tasty
