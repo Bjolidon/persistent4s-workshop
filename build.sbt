@@ -30,7 +30,8 @@ lazy val root = (project in file("."))
       "org.tpolecat" %% "skunk-circe" % SkunkV,
       "org.http4s" %% "http4s-ember-server" % Http4sV,
       "com.disneystreaming.smithy4s" %% "smithy4s-http4s-swagger" % Smithy4sV,
-      "com.disneystreaming.smithy4s" %% "smithy4s-http4s" % Smithy4sV
+      "com.disneystreaming.smithy4s" %% "smithy4s-http4s" % Smithy4sV,
+      "org.scalameta" %% "munit" % "1.0.0" % Test
     ),
     scalacOptions += "-deprecation"
   )
