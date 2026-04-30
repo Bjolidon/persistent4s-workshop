@@ -31,7 +31,7 @@ Start Docker (`docker-compose -f src/main/resources/docker-compose.yml up -d`), 
 ```
 sbt run
 ```
-Open http://localhost:8080/docs and exercise the API:
+Open http://localhost:8686/docs and exercise the API:
 - Register a member
 - Create an account for that member
 - Deposit into the account

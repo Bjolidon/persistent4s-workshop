@@ -22,4 +22,4 @@ In sbt, a dependency looks like:
 ```
 The `%%` means sbt appends the Scala version automatically (e.g. `persistent4s-core_3`).
 
-Once added, run `sbt compile` to verify.
+Once added, run `sbt compile` to check the dependencies resolve. You will see compilation errors about undefined types (`MemberRegistered`, `AccountCreated`, etc.) — these are expected and will be resolved in step 1.

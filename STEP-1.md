@@ -4,7 +4,7 @@
 
 In persistent4s, events are plain Scala case classes that extend the `Event` marker trait (from `persistent4s-core`). They are the facts that get stored in the event store.
 
-Unlike Axon where events are POJOs and serialization is configured separately, persistent4s uses circe for JSON serialization. Each event must derive `io.circe.Encoder` and `io.circe.Decoder` so the `persistent4s-circe` module can store and retrieve them.
+persistent4s uses circe for JSON serialization. Each event must derive `io.circe.Encoder` and `io.circe.Decoder` so the `persistent4s-circe` module can store and retrieve them.
 
 ## What to do
 
@@ -33,4 +33,4 @@ The sub-hierarchies (`MemberEvents`, `AccountEvents`, `TransactionEvents`) are n
 
 ## Verify
 
-`sbt compile` should succeed. `sbt test` will still show failures — that is expected until step 2.
+`sbt compile` should succeed.

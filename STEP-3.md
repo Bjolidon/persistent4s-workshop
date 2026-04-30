@@ -60,4 +60,7 @@ override def persistStates(states: Map[UUID, Option[Account]]): IO[Unit] =
 
 ## Verify
 
-Run `sbt test`. All projection specs should pass when your implementation is correct.
+```
+sbt "testOnly *ProjectionSpec"
+```
+All projection specs should pass when your implementation is correct.

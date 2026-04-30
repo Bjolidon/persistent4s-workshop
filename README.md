@@ -43,7 +43,7 @@ Run the application (once you have completed the workshop steps):
 sbt run
 ```
 
-The Swagger UI will be available at: http://localhost:8080/docs
+The Swagger UI will be available at: http://localhost:8686/docs
 
 Run tests:
 

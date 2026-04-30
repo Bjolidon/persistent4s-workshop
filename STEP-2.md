@@ -55,4 +55,7 @@ Open the remaining 5 handler files and implement the 5 methods in each:
 
 ## Verify
 
-Run `sbt test`. All command handler specs should pass when your implementation is correct.
+```
+sbt "testOnly *HandlerSpec"
+```
+All command handler specs should pass when your implementation is correct.
