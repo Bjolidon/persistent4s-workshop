@@ -11,8 +11,6 @@ The library is split into focused modules:
 | `persistent4s-core` | Core traits: `Event`, `CommandHandler`, `Projection`, `EventStore` |
 | `persistent4s-postgres` | PostgreSQL-backed event store via `PostgresModule` |
 | `persistent4s-circe` | JSON event serialization via `CirceEventCodec` |
-| `persistent4s-kafka` | Kafka event notification (used to trigger projections) |
-| `persistent4s-testkit` | Test utilities (% Test scope) |
 
 All modules are published under `io.github.antoniojimeneznieto` at version `0.2.0`.
 

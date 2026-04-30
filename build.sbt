@@ -23,8 +23,6 @@ lazy val root = (project in file("."))
       "io.github.antoniojimeneznieto" %% "persistent4s-core" % "0.2.0",
       "io.github.antoniojimeneznieto" %% "persistent4s-postgres" % "0.2.0",
       "io.github.antoniojimeneznieto" %% "persistent4s-circe" % "0.2.0",
-      "io.github.antoniojimeneznieto" %% "persistent4s-kafka" % "0.2.0",
-      "io.github.antoniojimeneznieto" %% "persistent4s-testkit" % "0.2.0" % Test,
       "org.typelevel" %% "cats-effect" % CatsEffectV,
       "org.tpolecat" %% "skunk-core" % SkunkV,
       "org.tpolecat" %% "skunk-circe" % SkunkV,

@@ -11,11 +11,38 @@ The library calls the projection methods in this sequence for each event:
 4. `handle` — compute the new state for each key
 5. `persistStates` — save updated states back to the repository
 
-DCB on the read side means `filter` is explicit: you declare exactly which event types the projection subscribes to using `EventTypeName.of[T]`. A projection can subscribe to events from multiple logical aggregates.
+DCB on the read side means `filter` is explicit: you declare exactly which event types the projection subscribes to using `EventTypeName.of[T]`. A projection can subscribe to events from multiple logical aggregates — this is what makes read models flexible in a DCB system.
+
+## Example — `MemberProjection`
+
+`MemberProjection.scala` is already implemented as a reference. It subscribes to a single event type and builds the `Member` read model.
+
+```scala
+override def filter: EventFilter =
+  EventFilter(Set(EventTypeName.of[MemberRegistered]))
+
+override def resolveKeys(event: EventEnvelope[BankEvent]): List[UUID] =
+  event.payload match
+    case MemberRegistered(memberId, _, _) => List(memberId)
+    case _                                => Nil
+
+override def fetchStates(keys: List[UUID]): IO[Map[UUID, Option[Member]]] =
+  repository.findMany(keys)
+
+override def handle(state: Option[Member], event: EventEnvelope[BankEvent]): IO[Option[Member]] =
+  (state, event.payload) match
+    case (None, MemberRegistered(memberId, name, birthDate)) =>
+      IO.pure(Some(Member(memberId, name, birthDate)))
+    case _ =>
+      IO.raiseError(new RuntimeException(s"Unexpected: $state / ${event.payload}"))
+
+override def persistStates(states: Map[UUID, Option[Member]]): IO[Unit] =
+  repository.persistMany(states)
+```
 
 ## What to do
 
-Open each of the 3 projection files and implement all 5 methods.
+Open the remaining 2 projection files and implement all 5 methods in each.
 
 For `fetchStates` and `persistStates`, delegate directly to the repository:
 ```scala
