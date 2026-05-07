@@ -4,7 +4,7 @@
 
 In persistent4s, events are plain Scala case classes that extend the `Event` marker trait (from `persistent4s-core`). They are the facts that get stored in the event store.
 
-persistent4s uses circe for JSON serialization. Each event must derive `io.circe.Encoder` and `io.circe.Decoder` so the `persistent4s-circe` module can store and retrieve them.
+For this exercice, we use circe for JSON serialization. Each event must derive `io.circe.Encoder` and `io.circe.Decoder` so the `persistent4s-circe` module can store and retrieve them.
 
 ## What to do
 
