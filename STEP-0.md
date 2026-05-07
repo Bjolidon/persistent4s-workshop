@@ -11,14 +11,15 @@ The library is split into focused modules:
 | `persistent4s-core` | Core traits: `Event`, `CommandHandler`, `Projection`, `EventStore` |
 | `persistent4s-postgres` | PostgreSQL-backed event store via `PostgresModule` |
 | `persistent4s-circe` | JSON event serialization via `CirceEventCodec` |
+| `persistent4s-monitoring` | Monitoring interface available on port 9090 |
 
-All modules are published under `io.github.antoniojimeneznieto` at version `0.2.0`.
+All modules are published under groupId `io.github.antoniojimeneznieto` at version `0.2.1`.
 
 ## Hint
 
 In sbt, a dependency looks like:
 ```scala
-"groupId" %% "artifactId" % "version"
+"groupId" %% "module" % "version"
 ```
 The `%%` means sbt appends the Scala version automatically (e.g. `persistent4s-core_3`).
 

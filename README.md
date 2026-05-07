@@ -45,6 +45,8 @@ sbt run
 
 The Swagger UI will be available at: http://localhost:8686/docs
 
+The persistent4s monitoring UI will be available at: http://localhost:9090
+
 Run tests:
 
 ```
