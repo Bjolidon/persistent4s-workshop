@@ -12,26 +12,37 @@ This is where **Dynamic Consistency Boundaries (DCB)** come in. The `tags` metho
 
 Unlike aggregate-per-command patterns, a handler can read across any number of streams — you declare them explicitly. This makes cross-cutting consistency checks (e.g., validating that both a member and an account exist before processing a transaction) straightforward and transactional.
 
-## Example — `RegisterMemberHandler`
+## Example — `CloseAccountHandler`
 
-`RegisterMember.scala` is already implemented as a reference. It is the simplest handler: no prior events are needed to register a member, so `tags` returns `Set.empty`, `initial` is `Unit`, and `evolve` is a no-op.
+`CloseAccount.scala` is already implemented as a reference. It reads a single account stream to check whether the account exists and is not already closed before closing it.
 
 ```scala
-object RegisterMemberHandler extends CommandHandler[RegisterMember, Unit, BankEvent] {
+object CloseAccountHandler extends CommandHandler[CloseAccount, CloseAccountState, BankEvent] {
 
-  override def tags(command: RegisterMember): Set[Tag] = Set.empty
+  override def tags(command: CloseAccount): Set[Tag] =
+    Set(Tag("account", command.accountId.toString))
 
-  override def initial: Unit = ()
+  override def initial: CloseAccountState =
+    CloseAccountState(accountExists = false, accountClosed = false)
 
-  override def evolve(command: RegisterMember, state: Unit, event: BankEvent): Unit = ()
+  override def evolve(command: CloseAccount, state: CloseAccountState, event: BankEvent): CloseAccountState =
+    event match {
+      case AccountCreated(accountId, _, _, _) if accountId == command.accountId =>
+        state.copy(accountExists = true)
+      case AccountClosed(accountId, _) if accountId == command.accountId =>
+        state.copy(accountClosed = true)
+      case _ => state
+    }
 
-  override def validate(state: Unit, command: RegisterMember): Either[Throwable, Unit] =
-    Right(())
+  override def validate(state: CloseAccountState, command: CloseAccount): Either[Throwable, Unit] =
+    if (!state.accountExists) Left(new Exception("Account does not exist"))
+    else if (state.accountClosed) Left(new Exception("Account is already closed"))
+    else Right(())
 
-  override def decide(state: Unit, command: RegisterMember): List[(Set[Tag], BankEvent)] =
+  override def decide(state: CloseAccountState, command: CloseAccount): List[(Set[Tag], BankEvent)] =
     List(
-      (Set(Tag("member", command.memberId.toString)),
-       MemberRegistered(command.memberId, command.name, command.birthDate))
+      (Set(Tag("account", command.accountId.toString)),
+       AccountClosed(command.accountId, LocalDateTime.now()))
     )
 }
 ```
