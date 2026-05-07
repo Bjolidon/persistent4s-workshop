@@ -11,7 +11,7 @@ The library is split into focused modules:
 | `persistent4s-core` | Core traits: `Event`, `CommandHandler`, `Projection`, `EventStore` |
 | `persistent4s-postgres` | PostgreSQL-backed event store via `PostgresModule` |
 | `persistent4s-circe` | JSON event serialization via `CirceEventCodec` |
-| `persistent4s-monitoring` | Monitoring interface available on port 9090 |
+| `persistent4s-monitoring` | Monitoring dashboard available on port 9090 |
 
 All modules are published under groupId `io.github.antoniojimeneznieto` at version `0.2.1`.
 

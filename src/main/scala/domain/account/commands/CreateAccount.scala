@@ -21,48 +21,24 @@ final case class AccountCreatedState(
 object CreateAccountHandler
     extends CommandHandler[CreateAccount, AccountCreatedState, BankEvent] {
 
-  override def tags(command: CreateAccount): Set[Tag] = Set(
-    Tag("member", command.memberId.toString)
-  )
+  override def tags(command: CreateAccount): Set[Tag] = ???
 
-  override def initial: AccountCreatedState =
-    AccountCreatedState(memberExists = false)
+  override def initial: AccountCreatedState = ???
 
   override def evolve(
       command: CreateAccount,
       state: AccountCreatedState,
       event: BankEvent
-  ): AccountCreatedState = event match {
-    case MemberRegistered(id, _, _) if id == command.memberId =>
-      state.copy(memberExists = true)
-    case _ => state
-  }
+  ): AccountCreatedState = ???
 
   override def validate(
       state: AccountCreatedState,
       command: CreateAccount
-  ): Either[Throwable, Unit] =
-    if (!state.memberExists) Left(new Exception("Member does not exist"))
-    else Right(())
+  ): Either[Throwable, Unit] = ???
 
   override def decide(
       state: AccountCreatedState,
       command: CreateAccount
-  ): List[(Set[Tag], BankEvent)] = {
-    List(
-      (
-        Set(
-          Tag("member", command.memberId.toString),
-          Tag("account", command.accountId.toString)
-        ),
-        AccountCreated(
-          command.accountId,
-          command.memberId,
-          command.name,
-          LocalDateTime.now()
-        )
-      )
-    )
-  }
+  ): List[(Set[Tag], BankEvent)] = ???
 
 }
