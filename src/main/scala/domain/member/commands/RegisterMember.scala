@@ -17,24 +17,30 @@ final case class RegisterMember(
 object RegisterMemberHandler
     extends CommandHandler[RegisterMember, Unit, BankEvent] {
 
-  override def tags(command: RegisterMember): Set[Tag] = ???
+  override def tags(command: RegisterMember): Set[Tag] = Set.empty
 
-  override def initial: Unit = ???
+  override def initial: Unit = ()
 
   override def evolve(
       command: RegisterMember,
       state: Unit,
       event: BankEvent
-  ): Unit = ???
+  ): Unit = ()
 
   override def validate(
       state: Unit,
       command: RegisterMember
-  ): Either[Throwable, Unit] = ???
+  ): Either[Throwable, Unit] = Right(())
 
   override def decide(
       state: Unit,
       command: RegisterMember
-  ): List[(Set[Tag], BankEvent)] = ???
+  ): List[(Set[Tag], BankEvent)] =
+    List(
+      (
+        Set(Tag.apply("member", command.memberId.toString)),
+        MemberRegistered(command.memberId, command.name, command.birthDate)
+      )
+    )
 
 }
