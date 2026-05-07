@@ -7,6 +7,7 @@ import cats.effect.{IO, Resource}
 import persistent4s.postgres.PostgresConfig
 import pureconfig.ConfigSource
 import persistent4s.*
+import persistent4s.monitoring.*
 import domain.member.*
 import domain.account.*
 import domain.transaction.*
@@ -15,6 +16,7 @@ import org.typelevel.otel4s.trace.Tracer
 import org.typelevel.otel4s.metrics.Meter
 import skunk.Session
 import skunk.TypingStrategy
+import javax.management.monitor.Monitor
 
 given Tracer[IO] = Tracer.Implicits.noop
 
@@ -40,6 +42,7 @@ object BankModule {
         .make[IO, BankEvent](eventCodec, configPath)
       eventStore = eventStoreComponents.eventStore
       checkpointStore = eventStoreComponents.checkpoint
+      monitoring <- MonitoringServer.make(checkpointStore, eventStore.notify)
       config <- Resource.eval(loadConfig(configPath))
       sessionPool <- Session
         .Builder[IO]

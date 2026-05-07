@@ -1,6 +1,6 @@
 package domain.transaction
 
-import infrastructure.Repository
+import persistent4s.Repository
 import cats.effect.IO
 import java.util.UUID
 import cats.effect.Resource
@@ -25,9 +25,6 @@ final case class TransactionRepository private (
 
   import TransactionRepository.*
 
-  override def find(key: UUID): IO[Option[Transaction]] =
-    pool.use(_.option(findQuery)(key))
-
   override def findMany(
       keys: List[UUID]
   ): IO[Map[UUID, Option[Transaction]]] =
@@ -38,31 +35,26 @@ final case class TransactionRepository private (
         keys.map(k => k -> found.get(k)).toMap
       }
 
-  override def persistMany(
-      states: Map[UUID, Option[Transaction]]
-  ): IO[Unit] =
-    val toUpsert = states.collect { case (_, Some(v)) => v }.toList
-    val toDelete = states.collect { case (k, None) => k }.toList
-    if toUpsert.isEmpty && toDelete.isEmpty then IO.unit
+  override def upsertMany(states: Map[UUID, Transaction]): IO[Unit] =
+    if states.isEmpty then IO.unit
     else
       pool.use { session =>
         session.transaction.use { _ =>
-          val upsertEffect =
-            if toUpsert.isEmpty then IO.unit
-            else
-              toUpsert
-                .grouped(MaxUpsertChunkSize)
-                .toList
-                .traverse_(chunk =>
-                  session.execute(upsertManyCommand(chunk.size))(chunk).void
-                )
-          val deleteEffect =
-            if toDelete.isEmpty then IO.unit
-            else
-              session.execute(deleteManyCommand(toDelete.size))(toDelete).void
-          upsertEffect >> deleteEffect
+          states.values.toList
+            .grouped(MaxUpsertChunkSize)
+            .toList
+            .traverse_(chunk =>
+              session.execute(upsertManyCommand(chunk.size))(chunk).void
+            )
         }
       }
+
+  override def deleteMany(keys: List[UUID]): IO[Unit] =
+    if keys.isEmpty then IO.unit
+    else pool.use(_.execute(deleteManyCommand(keys.size))(keys)).void
+
+  def find(key: UUID): IO[Option[Transaction]] =
+    pool.use(_.option(findQuery)(key))
 
   def findByAccountId(accountId: UUID): IO[List[Transaction]] =
     pool.use(_.execute(findByAccountIdQuery)(accountId))

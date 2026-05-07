@@ -10,19 +10,17 @@ import persistent4s.EventTypeName
 import domain.*
 
 final class AccountProjection private (
-    repository: AccountRepository
+    protected val repository: AccountRepository
 ) extends Projection[IO, BankEvent, UUID, Account] {
 
   override def name: String = "AccountProjection"
 
-  override def filter: EventFilter = EventFilter(
-    eventTypes = Set(
-      EventTypeName.of[AccountCreated],
-      EventTypeName.of[AccountClosed],
-      EventTypeName.of[Deposited],
-      EventTypeName.of[Withdrawn],
-      EventTypeName.of[Transferred]
-    )
+  override def filter: Set[EventTypeName] = Set(
+    EventTypeName.of[AccountCreated],
+    EventTypeName.of[AccountClosed],
+    EventTypeName.of[Deposited],
+    EventTypeName.of[Withdrawn],
+    EventTypeName.of[Transferred]
   )
 
   override def resolveKeys(event: EventEnvelope[BankEvent]): List[UUID] =
@@ -35,10 +33,6 @@ final class AccountProjection private (
         List(debitAccountId, creditAccountId)
       case _ => Nil
     }
-
-  override def fetchStates(
-      keys: List[UUID]
-  ): IO[Map[UUID, Option[Account]]] = repository.findMany(keys)
 
   override def handle(
       state: Option[Account],
@@ -80,9 +74,6 @@ final class AccountProjection private (
             s"Failed to apply event: ${event.payload} to state: $state"
           )
         )
-
-  override def persistStates(states: Map[UUID, Option[Account]]): IO[Unit] =
-    repository.persistMany(states)
 
 }
 

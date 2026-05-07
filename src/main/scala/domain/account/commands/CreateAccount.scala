@@ -49,14 +49,18 @@ object CreateAccountHandler
       state: AccountCreatedState,
       command: CreateAccount
   ): List[(Set[Tag], BankEvent)] = {
-    val id = UUID.randomUUID()
     List(
       (
         Set(
           Tag("member", command.memberId.toString),
-          Tag("account", id.toString)
+          Tag("account", command.accountId.toString)
         ),
-        AccountCreated(id, command.memberId, command.name, LocalDateTime.now())
+        AccountCreated(
+          command.accountId,
+          command.memberId,
+          command.name,
+          LocalDateTime.now()
+        )
       )
     )
   }

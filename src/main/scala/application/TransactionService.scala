@@ -19,8 +19,9 @@ class TransactionServiceImpl(repository: TransactionRepository)(using
   override def withdraw(accountId: UUID, amount: Int): IO[WithdrawOutput] =
     for {
       transactionId <- IO(UUID.randomUUID())
-      _ <- WithdrawHandler.run[IO](Withdraw(transactionId, accountId, amount))
-             .adaptError { case e => ValidationError(e.getMessage) }
+      _ <- WithdrawHandler
+        .run[IO](Withdraw(transactionId, accountId, amount))
+        .adaptError { case e => ValidationError(e.getMessage) }
     } yield WithdrawOutput(transactionId)
 
   override def transfer(
@@ -30,16 +31,19 @@ class TransactionServiceImpl(repository: TransactionRepository)(using
   ): IO[TransferOutput] =
     for {
       transactionId <- IO(UUID.randomUUID())
-      _ <- TransferHandler.run[IO](
-        Transfer(transactionId, debitAccountId, creditAccountId, amount)
-      ).adaptError { case e => ValidationError(e.getMessage) }
+      _ <- TransferHandler
+        .run[IO](
+          Transfer(transactionId, debitAccountId, creditAccountId, amount)
+        )
+        .adaptError { case e => ValidationError(e.getMessage) }
     } yield TransferOutput(transactionId)
 
   override def deposit(accountId: UUID, amount: Int): IO[DepositOutput] =
     for {
       transactionId <- IO(UUID.randomUUID())
-      _ <- DepositHandler.run[IO](Deposit(transactionId, accountId, amount))
-             .adaptError { case e => ValidationError(e.getMessage) }
+      _ <- DepositHandler
+        .run[IO](Deposit(transactionId, accountId, amount))
+        .adaptError { case e => ValidationError(e.getMessage) }
     } yield DepositOutput(transactionId)
 
   override def getTransaction(

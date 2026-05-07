@@ -20,9 +20,10 @@ lazy val root = (project in file("."))
   .settings(
     name := "test-persitstent4s-import",
     libraryDependencies ++= Seq(
-      "io.github.antoniojimeneznieto" %% "persistent4s-core" % "0.2.0",
-      "io.github.antoniojimeneznieto" %% "persistent4s-postgres" % "0.2.0",
-      "io.github.antoniojimeneznieto" %% "persistent4s-circe" % "0.2.0",
+      "io.github.antoniojimeneznieto" %% "persistent4s-core" % "0.2.1",
+      "io.github.antoniojimeneznieto" %% "persistent4s-postgres" % "0.2.1",
+      "io.github.antoniojimeneznieto" %% "persistent4s-circe" % "0.2.1",
+      "io.github.antoniojimeneznieto" %% "persistent4s-monitoring" % "0.2.1",
       "org.typelevel" %% "cats-effect" % CatsEffectV,
       "org.tpolecat" %% "skunk-core" % SkunkV,
       "org.tpolecat" %% "skunk-circe" % SkunkV,

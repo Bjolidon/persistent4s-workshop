@@ -10,22 +10,19 @@ import persistent4s.EventTypeName
 import domain.*
 
 final class MemberProjection private (
-    repository: MemberRepository
+    protected val repository: MemberRepository
 ) extends Projection[IO, BankEvent, UUID, Member] {
 
   override def name: String = "MemberProjection"
 
-  override def filter: EventFilter =
-    EventFilter(Set(EventTypeName.of[MemberRegistered]))
+  override def filter: Set[EventTypeName] = Set(
+    EventTypeName.of[MemberRegistered]
+  )
 
   override def resolveKeys(event: EventEnvelope[BankEvent]): List[UUID] =
     event.payload match
       case MemberRegistered(memberId, _, _) => List(memberId)
       case _                                => Nil
-
-  override def fetchStates(
-      keys: List[UUID]
-  ): IO[Map[UUID, Option[Member]]] = repository.findMany(keys)
 
   override def handle(
       state: Option[Member],
@@ -39,10 +36,6 @@ final class MemberProjection private (
           s"Failed to apply event: ${event.payload} to state: $state"
         )
       )
-
-  override def persistStates(states: Map[UUID, Option[Member]]): IO[Unit] =
-    repository.persistMany(states)
-
 }
 
 object MemberProjection {
