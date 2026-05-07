@@ -38,9 +38,8 @@ object BankModule {
 
   def make(configPath: String): Resource[IO, BankModule] =
     for {
-      // Step 4a: use PostgresModule.make to obtain eventStore and checkpointStore
       eventStoreComponents <- PostgresModule
-        .make[IO, BankEvent](???, ???)
+        .make[IO, BankEvent](eventCodec, configPath)
       eventStore = eventStoreComponents.eventStore
       checkpointStore = eventStoreComponents.checkpoint
       monitoring <- MonitoringServer.make(checkpointStore, eventStore.notify)
@@ -59,8 +58,7 @@ object BankModule {
       accountProjection = AccountProjection.make(accountRepository)
       transactionRepository = TransactionRepository.make(sessionPool)
       transactionProjection = TransactionProjection.make(transactionRepository)
-      // Step 4b: instantiate DefaultProjector and run the three projections in the background
-      projector = DefaultProjector[IO, BankEvent](???, ???)
+      projector = DefaultProjector[IO, BankEvent](eventStore, checkpointStore)
       _ <- projector.run(memberProjection).compile.drain.background
       _ <- projector.run(accountProjection).compile.drain.background
       _ <- projector.run(transactionProjection).compile.drain.background
